@@ -5,10 +5,29 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const db = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const ruleRoutes = require('./routes/ruleRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const configRoutes = require('./routes/configRoutes');
+
+async function initConfig() {
+  try {
+    console.log('Checking configuracion table...');
+    const result = await db.query('SELECT id FROM configuracion WHERE id = 1');
+    if (result.rows.length > 0) {
+      console.log('Configuration record already exists (id=1). Nothing to do.');
+    } else {
+      await db.query(
+        "INSERT INTO configuracion (id, modo_asignacion) VALUES (1, 'AUTO_POR_TAREA')"
+      );
+      console.log("Configuration record inserted: id=1, modo_asignacion='AUTO_POR_TAREA'.");
+    }
+  } catch (err) {
+    console.error('Failed to initialize configuration:', err.message);
+    console.error('Orders may fail to assign until the configuracion table is seeded.');
+  }
+}
 
 app.use(cors({
   origin: '*',
@@ -37,6 +56,8 @@ app.use(express.static(path.join(__dirname, '../../frontend'), {
   }
 }));
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+initConfig().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
