@@ -1,5 +1,3 @@
-import { fetchApi } from './api.js';
-
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const errorMsg = document.getElementById('login-error');
@@ -25,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
 
             try {
-                const response = await fetchApi('/users/login', {
+                const response = await window.fetchApi('/users/login', {
                     method: 'POST',
                     body: JSON.stringify({ email, password })
                 });

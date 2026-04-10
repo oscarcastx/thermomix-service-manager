@@ -1,5 +1,3 @@
-import { fetchApi, getUser, logout } from './api.js';
-
 document.addEventListener('DOMContentLoaded', async () => {
     const user = getUser();
     if (!user || user.rol !== 'supervisor') {
