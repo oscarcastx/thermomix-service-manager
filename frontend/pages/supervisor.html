@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor - Thermomix Service Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="font-size: 1.6rem; text-transform: lowercase; letter-spacing: -1px; font-weight: 800;">thermomix</h2>
+            <div class="user-role">Supervisor</div>
+            <div id="user-name" style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">Cargando...</div>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item active" data-target="tab-dashboard">Dashboard</li>
+            <li class="nav-item" data-target="tab-rules">Reglas Diarias</li>
+            <li class="nav-item" data-target="tab-orders">Todas las Órdenes</li>
+            <li class="nav-item" data-target="tab-users">Personal / Usuarios</li>
+        </ul>
+        <button id="logout-btn" class="btn-secondary logout-btn">Cerrar Sesión</button>
+    </aside>
+
+    <main class="main-content">
+    <main class="main-content">
+        <!-- Panel Dashboard -->
+        <section id="tab-dashboard" class="content-section">
+            <div class="header-actions">
+                <h1>Panorama Operativo y Reporte Maestro</h1>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <input type="date" id="report-date" style="padding: 0.5rem; border-radius: var(--radius); border: 1px solid var(--border-color);">
+                    <button class="btn-primary" id="download-report-btn" style="width: auto; background-color: #0984E3; box-shadow: 0 4px 15px rgba(9, 132, 227, 0.4); font-weight: bold; border-radius: 8px;">📊 Descargar Reporte "Pro" CSV</button>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Órdenes por Estado</h3>
+                    <div id="stats-orders" style="margin-top: 1rem;">
+                        <p>Cargando métricas...</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Carga Activa por Técnico</h3>
+                    <div id="stats-techs" style="margin-top: 1rem;">
+                        <p>Cargando métricas...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Disponibilidad y Reglas Diarias</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Técnico</th>
+                                <th>Regla Actual (Hoy)</th>
+                                <th>Correo de Contacto</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-tech-table">
+                            <tr><td colspan="3">Cargando disponibilidad...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Actividad Reciente Global (Diagnósticos y Reparaciones)</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha y Hora</th>
+                                <th>Orden</th>
+                                <th>Usuario Responsable</th>
+                                <th>Movimiento / Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-activity-table">
+                            <tr><td colspan="4">Cargando actividad...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel de Reglas -->
+        <section id="tab-rules" class="content-section" style="display: none;">
+            <div class="header-actions">
+                <h1>Configuración de Reglas (Unifila)</h1>
+            </div>
+
+            <div class="card" style="margin-bottom: 2rem;">
+                <h3>Modo de Asignación de Reparaciones (Global)</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Define si la reparación de un equipo debe ser forzada al mismo técnico que diagnosticó el equipo (`MISMO_TECNICO`), ignorando las reglas abajo especificadas, o si pasará a una fila general para ser asignada basado en modelo (`AUTO_POR_TAREA`).</p>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <select id="config-modo-asignacion" style="width: auto;">
+                        <option value="AUTO_POR_TAREA">AUTO_POR_TAREA (Asignación automática basada en Reglas Activas)</option>
+                        <option value="MISMO_TECNICO">MISMO_TECNICO (Obligar asignación al técnico original de Diagnóstico)</option>
+                    </select>
+                    <button class="btn-primary" id="btn-save-config" style="width: auto;">Guardar Cambios</button>
+                    <span id="config-status" style="margin-left: 1rem; font-weight: 600; color: var(--primary-color);"></span>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- Formulario -->
+                <div class="card">
+                    <h3>Asignar Regla a Técnico</h3>
+                    <form id="rule-form" style="margin-top: 1rem;">
+                        <input type="hidden" id="rule-date">
+                        <div class="form-group">
+                            <label>Técnico</label>
+                            <select id="rule-tecnico" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Modelo asignado</label>
+                            <select id="rule-modelo" required>
+                                <option value="TM5">TM5</option>
+                                <option value="TM6">TM6</option>
+                                <option value="TM7">TM7</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Proceso asignado</label>
+                            <select id="rule-proceso" required>
+                                <option value="diagnostico">Diagnóstico</option>
+                                <option value="reparacion">Reparación</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Guardar Regla</button>
+                    </form>
+                </div>
+
+                <!-- Lista de reglas -->
+                <div class="card">
+                    <h3>Reglas Activas - Hoy</h3>
+                    <div style="overflow-x:auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Técnico</th>
+                                    <th>Modelo</th>
+                                    <th>Proceso</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="rules-table-body">
+                                <tr><td colspan="4">Cargando reglas...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel de Órdenes -->
+        <section id="tab-orders" class="content-section" style="display: none;">
+            <div class="header-actions">
+                <h1>Visor de Órdenes</h1>
+                <button class="btn-secondary" id="refresh-orders-btn">Actualizar</button>
+            </div>
+            <div class="card">
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Orden</th>
+                                <th>Modelo</th>
+                                <th>Estado</th>
+                                <th>Proceso</th>
+                                <th>Técnico</th>
+                                <th>Prioridad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                           <tr><td colspan="6">Cargando órdenes...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel de Usuarios -->
+        <section id="tab-users" class="content-section" style="display: none;">
+            <div class="header-actions">
+                <h1>Gestión de Personal</h1>
+            </div>
+            <div class="card" style="max-width: 600px;">
+                <h3>Registrar Nuevo Usuario</h3>
+                <form id="user-form" style="margin-top: 1rem;">
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="user-name-input" required placeholder="Ej. Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label>Correo Electrónico (Login)</label>
+                        <input type="email" id="user-email-input" required placeholder="juan@thermomix.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña Tempral</label>
+                        <input type="password" id="user-password-input" required placeholder="Mínimo 6 caracteres" minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Rol del Sistema</label>
+                        <select id="user-role-input" required>
+                            <option value="tecnico">Técnico (Diagnóstico/Reparación)</option>
+                            <option value="ejecutivo">Ejecutivo (Ingreso y Aprobaciones)</option>
+                            <option value="supervisor">Supervisor (Administración)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Crear Usuario</button>
+                </form>
+            </div>
+
+            <div class="card" style="margin-top: 2rem;">
+                <h3>Lista de Usuarios</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                           <tr><td colspan="5">Cargando usuarios...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="../js/supervisor.js"></script>
+</body>
+</html>

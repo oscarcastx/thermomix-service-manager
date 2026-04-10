@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermomix Service Manager - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-brand">
+            <div class="logo" style="font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; text-transform: lowercase;">thermomix</div>
+            <h1 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem;">Servicio Técnico</h1>
+            <p style="font-size: 1.1rem; opacity: 0.9;">Sistema Unifila</p>
+        </div>
+        <form id="login-form" class="login-form">
+            <h2>Iniciar Sesión</h2>
+            <div id="login-error" class="error-msg" style="display: none;"></div>
+            
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" required placeholder="ejemplo@thermomix.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" required placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="btn-primary" id="login-btn">
+                Ingresar al Sistema
+            </button>
+        </form>
+    </div>
+
+    <script type="module" src="js/api.js"></script>
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>

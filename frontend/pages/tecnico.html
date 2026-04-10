@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Técnico - Thermomix Service Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="font-size: 1.6rem; text-transform: lowercase; letter-spacing: -1px; font-weight: 800;">thermomix</h2>
+            <div class="user-role">Técnico Unifila</div>
+            <div id="user-name" style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">Cargando...</div>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item active" data-target="tab-work">Mi Estación</li>
+            <li class="nav-item" data-target="tab-history">Historial Hoy</li>
+        </ul>
+        <button id="logout-btn" class="btn-secondary logout-btn">Cerrar Sesión</button>
+    </aside>
+
+    <main class="main-content">
+        <!-- Pestaña principal de trabajo -->
+        <section id="tab-work" class="content-section">
+            <div class="header-actions">
+                <h1>Fila de Trabajo <span id="current-rule" class="badge badge-info" style="margin-left:1rem;">Buscando regla...</span></h1>
+            </div>
+            
+            <div class="card" style="text-align: center; padding: 4rem 2rem;">
+                <div id="no-order-state">
+                    <h2 style="color: var(--text-muted); margin-bottom: 2rem;">No tienes ninguna orden activa</h2>
+                    <button id="take-next-btn" class="btn-primary" style="font-size: 1.25rem; padding: 1.5rem; max-width: 400px; box-shadow: var(--shadow-lg);">
+                        TOMAR SIGUIENTE ORDEN (UNIFILA)
+                    </button>
+                </div>
+                
+                <div id="active-order-state" style="display: none; text-align: left; max-width: 600px; margin: 0 auto;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                        <h2 style="color: var(--primary-color);">Orden Activa: <span id="active-order-id"></span></h2>
+                        <span id="active-priority" class="badge badge-danger" style="display:none;">Prioridad Alta</span>
+                    </div>
+                    
+                    <div class="grid-2" style="margin-bottom: 1.5rem;">
+                        <div>
+                            <strong>Modelo:</strong> <span id="active-model"></span><br>
+                            <strong>Proceso:</strong> <span id="active-process"></span><br>
+                            <strong>Tiempo en proceso:</strong> <span id="active-time" style="color:var(--state-process); font-weight: bold;">00:00:00</span>
+                        </div>
+                    </div>
+                    
+                    <div style="background:var(--bg-color); padding: 1rem; border-radius: var(--radius); margin-bottom: 2rem;">
+                        <strong>Comentarios Falla:</strong>
+                        <p id="active-comments" style="margin-top:0.5rem; color:var(--text-muted);"></p>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                        <button id="pause-btn" class="btn-secondary" style="flex: 1; display: none;">⏸ Pausar Timer</button>
+                        <button id="resume-btn" class="btn-primary" style="flex: 1; display: none; background-color: var(--success-color);">▶ Reanudar Timer</button>
+                    </div>
+
+                    <button id="finish-btn" class="btn-primary" style="background-color: var(--secondary-color); width: 100%;">Finalizar Tarea (Diagnóstico/Reparación)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Historial básico -->
+        <section id="tab-history" class="content-section" style="display: none;">
+            <div class="header-actions">
+                <h1>Historial de Actividades por Día</h1>
+                <div style="display: flex; gap: 1rem; align-items: center; justify-content: flex-start; margin-top: 1rem;">
+                    <label for="report-date" style="font-weight: 600;">Seleccionar Día:</label>
+                    <input type="date" id="report-date" style="padding: 0.5rem; border-radius: var(--radius); border: 1px solid var(--border-color);">
+                    <button id="download-report-btn" class="btn-primary" style="background-color: #0984E3; padding: 0.5rem 1rem; box-shadow: 0 4px 15px rgba(9, 132, 227, 0.4); font-weight: bold;">📊 Descargar CSV</button>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 2rem;">
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Orden</th>
+                                <th>Modelo</th>
+                                <th>Acción Realizada</th>
+                                <th>Inicio</th>
+                                <th>Pausa</th>
+                                <th>Final</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                           <tr><td colspan="4">Cargando historial...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="../js/tecnico.js"></script>
+</body>
+</html>
