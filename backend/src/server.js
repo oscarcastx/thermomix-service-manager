@@ -10,7 +10,11 @@ const ruleRoutes = require('./routes/ruleRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const configRoutes = require('./routes/configRoutes');
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
