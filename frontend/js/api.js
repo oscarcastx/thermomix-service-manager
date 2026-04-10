@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://tu-proyecto-backend.up.railway.app/api';
 
 /**
  * Utility to make API calls with automatic JWT injection
