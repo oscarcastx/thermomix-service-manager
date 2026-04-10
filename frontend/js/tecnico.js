@@ -1,5 +1,3 @@
-import { fetchApi, getUser, logout } from './api.js';
-
 let timerInterval;
 
 document.addEventListener('DOMContentLoaded', async () => {
