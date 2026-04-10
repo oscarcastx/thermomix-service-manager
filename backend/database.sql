@@ -66,3 +66,10 @@ CREATE TABLE IF NOT EXISTS reglas (
 INSERT INTO usuarios (nombre, email, password, rol) 
 VALUES ('Super Admin', 'admin@thermomix.com', '$2b$10$AuqXFDBgn2QDcIFnSxou1OnRPWxHH8QuxPUFC1R0/IQQOg1S.OXbS', 'supervisor')
 ON CONFLICT (email) DO NOTHING;
+
+-- Insert the required configuration record.
+-- Without this row the application crashes when assigning orders because
+-- configResult.rows[0] is undefined. Run `node backend/init_config.js` to
+-- insert this record on an existing database where it may have been deleted.
+INSERT INTO configuracion (id, modo_asignacion) VALUES (1, 'AUTO_POR_TAREA')
+ON CONFLICT (id) DO NOTHING;
