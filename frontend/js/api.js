@@ -4,6 +4,11 @@ const API_URL = 'https://thermomix-service-manager-production.up.railway.app/api
  * Utility to make API calls with automatic JWT injection
  */
 export const fetchApi = async (endpoint, options = {}) => {
+
+/**
+ * Utility to make API calls with automatic JWT injection
+ */
+export const fetchApi = async (endpoint, options = {}) => {
     const token = localStorage.getItem('tmx_token');
     
     const headers = {
