@@ -1,4 +1,4 @@
-const API_URL = 'thermomix-service-manager-production.up.railway.app';
+const API_URL = 'https://thermomix-service-manager-production.up.railway.app/api';
 
 /**
  * Utility to make API calls with automatic JWT injection
