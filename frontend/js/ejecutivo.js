@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             orden_servicio: document.getElementById('order-id').value,
             modelo: document.getElementById('order-model').value,
             comentarios: document.getElementById('order-comments').value,
+            ubicacion: document.getElementById('order-location').value,
             prioridad: document.getElementById('order-priority').checked
         };
 

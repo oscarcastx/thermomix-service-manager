@@ -91,7 +91,53 @@ function showActiveOrder(order) {
     document.getElementById('active-model').innerText = order.modelo;
     document.getElementById('active-process').innerText = order.tipo_proceso === 'diagnostico' ? 'Diagnóstico' : 'Reparación';
     document.getElementById('active-comments').innerText = order.comentarios || 'N/A';
-    
+
+    // Location display
+    const locationSpan = document.getElementById('active-location');
+    locationSpan.innerText = order.ubicacion || 'Sin ubicación registrada';
+    document.getElementById('location-display').style.display = 'flex';
+    document.getElementById('location-edit').style.display = 'none';
+
+    // Wire up location edit controls (replace to avoid duplicate listeners)
+    const editBtn = document.getElementById('edit-location-btn');
+    const saveBtn = document.getElementById('save-location-btn');
+    const cancelBtn = document.getElementById('cancel-location-btn');
+    const locationInput = document.getElementById('location-input');
+
+    const newEditBtn = editBtn.cloneNode(true);
+    editBtn.parentNode.replaceChild(newEditBtn, editBtn);
+    const newSaveBtn = saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+    const newCancelBtn = cancelBtn.cloneNode(true);
+    cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+    newEditBtn.addEventListener('click', () => {
+        locationInput.value = order.ubicacion || '';
+        document.getElementById('location-display').style.display = 'none';
+        document.getElementById('location-edit').style.display = 'flex';
+    });
+
+    newCancelBtn.addEventListener('click', () => {
+        document.getElementById('location-display').style.display = 'flex';
+        document.getElementById('location-edit').style.display = 'none';
+    });
+
+    newSaveBtn.addEventListener('click', async () => {
+        const newLocation = locationInput.value.trim();
+        try {
+            const res = await fetchApi(`/orders/${order.id}/location`, {
+                method: 'PUT',
+                body: JSON.stringify({ ubicacion: newLocation })
+            });
+            order.ubicacion = res.orden.ubicacion;
+            locationSpan.innerText = res.orden.ubicacion || 'Sin ubicación registrada';
+            document.getElementById('location-display').style.display = 'flex';
+            document.getElementById('location-edit').style.display = 'none';
+        } catch (err) {
+            alert('Error al guardar ubicación: ' + err.message);
+        }
+    });
+
     document.getElementById('active-priority').style.display = order.prioridad ? 'inline-block' : 'none';
 
     // Set action IDs

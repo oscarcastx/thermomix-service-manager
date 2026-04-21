@@ -51,9 +51,22 @@
                         </div>
                     </div>
                     
-                    <div style="background:var(--bg-color); padding: 1rem; border-radius: var(--radius); margin-bottom: 2rem;">
+                    <div style="background:var(--bg-color); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
                         <strong>Comentarios Falla:</strong>
                         <p id="active-comments" style="margin-top:0.5rem; color:var(--text-muted);"></p>
+                    </div>
+
+                    <div style="background:var(--bg-color); padding: 1rem; border-radius: var(--radius); margin-bottom: 2rem;">
+                        <strong>Ubicación en Almacén:</strong>
+                        <div id="location-display" style="margin-top:0.5rem; display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                            <span id="active-location" style="color:var(--text-muted);"></span>
+                            <button id="edit-location-btn" class="btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.85rem; width: auto;">✏️ Editar</button>
+                        </div>
+                        <div id="location-edit" style="display:none; margin-top:0.75rem; display:none; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                            <input type="text" id="location-input" placeholder="Ej: Estante A-5, Pasillo 3" style="flex:1; min-width:200px;">
+                            <button id="save-location-btn" class="btn-primary" style="padding: 0.35rem 1rem; width: auto;">Guardar</button>
+                            <button id="cancel-location-btn" class="btn-secondary" style="padding: 0.35rem 0.75rem; width: auto;">Cancelar</button>
+                        </div>
                     </div>
 
                     <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">

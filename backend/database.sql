@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS ordenes (
   orden_servicio VARCHAR(50) UNIQUE NOT NULL,
   modelo VARCHAR(10) CHECK (modelo IN ('TM5', 'TM6', 'TM7')) NOT NULL,
   comentarios TEXT,
+  ubicacion TEXT,
   prioridad BOOLEAN DEFAULT false,
   estado VARCHAR(30) CHECK (estado IN ('CREADA', 'EN_DIAGNOSTICO', 'DIAGNOSTICO_TERMINADO', 'ESPERANDO_PAGO', 'PAGADO', 'EN_REPARACION', 'REPARACION_TERMINADA', 'FINALIZADA')) NOT NULL,
   tipo_proceso VARCHAR(20) CHECK (tipo_proceso IN ('diagnostico', 'reparacion')) NOT NULL,
