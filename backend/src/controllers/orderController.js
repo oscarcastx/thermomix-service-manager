@@ -12,7 +12,7 @@ const logHistory = async (orderId, estadoAnterior, estadoNuevo, usuarioId) => {
 };
 
 const createOrder = async (req, res) => {
-  const { orden_servicio, modelo, comentarios, prioridad } = req.body;
+  const { orden_servicio, modelo, comentarios, prioridad, ubicacion } = req.body;
   const ejecutivoId = req.user.id;
 
   if (!orden_servicio || !modelo) {
@@ -21,10 +21,10 @@ const createOrder = async (req, res) => {
 
   try {
     const result = await db.query(
-      `INSERT INTO ordenes (orden_servicio, modelo, comentarios, prioridad, estado, tipo_proceso, ejecutivo_id) 
-       VALUES ($1, $2, $3, $4, 'CREADA', 'diagnostico', $5) 
+      `INSERT INTO ordenes (orden_servicio, modelo, comentarios, ubicacion, prioridad, estado, tipo_proceso, ejecutivo_id) 
+       VALUES ($1, $2, $3, $4, $5, 'CREADA', 'diagnostico', $6) 
        RETURNING *`,
-      [orden_servicio, modelo, comentarios || '', prioridad || false, ejecutivoId]
+      [orden_servicio, modelo, comentarios || '', ubicacion || null, prioridad || false, ejecutivoId]
     );
 
     res.status(201).json({ message: 'Orden creada exitosamente.', orden: result.rows[0] });
@@ -355,4 +355,32 @@ const getMyActiveOrder = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, getOrders, takeNextOrder, finishTask, registerPayment, markFinished, getMyActiveOrder, pauseTask, resumeTask };
+const updateOrderLocation = async (req, res) => {
+  const { id } = req.params;
+  const { ubicacion } = req.body;
+  const tecnicoId = req.user.id;
+
+  try {
+    // Verify the technician is assigned to this order
+    const orderReq = await db.query(
+      `SELECT * FROM ordenes WHERE id = $1 AND (tecnico_diagnostico_id = $2 OR tecnico_reparacion_id = $2)`,
+      [id, tecnicoId]
+    );
+
+    if (orderReq.rows.length === 0) {
+      return res.status(403).json({ error: 'No tienes permiso para modificar esta orden.' });
+    }
+
+    const updated = await db.query(
+      `UPDATE ordenes SET ubicacion = $1 WHERE id = $2 RETURNING *`,
+      [ubicacion || null, id]
+    );
+
+    res.json({ message: 'Ubicación actualizada correctamente.', orden: updated.rows[0] });
+  } catch (error) {
+    console.error('Error actualizando ubicación:', error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+};
+
+module.exports = { createOrder, getOrders, takeNextOrder, finishTask, registerPayment, markFinished, getMyActiveOrder, pauseTask, resumeTask, updateOrderLocation };

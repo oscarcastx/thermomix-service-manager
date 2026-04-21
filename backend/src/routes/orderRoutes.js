@@ -23,5 +23,6 @@ router.post('/take-next', verifyRole(['tecnico']), orderController.takeNextOrder
 router.post('/:id/finish', verifyRole(['tecnico']), orderController.finishTask);
 router.post('/:id/pause', verifyRole(['tecnico']), orderController.pauseTask);
 router.post('/:id/resume', verifyRole(['tecnico']), orderController.resumeTask);
+router.put('/:id/location', verifyRole(['tecnico']), orderController.updateOrderLocation);
 
 module.exports = router;
